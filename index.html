@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="fr" data-theme="dark">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="Explorateur fun et moderne d'une awesome list SysAdmin, avec recherche, filtres et effets visuels." />
+  <title>Awesome Sysadmin — Cyber DevOps Playground</title>
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+
+<body>
+  <div class="progress" id="progress"></div>
+  <div class="fx-fog" aria-hidden="true"></div>
+  <div class="fx-bg" aria-hidden="true"></div>
+  <canvas id="stars" aria-hidden="true"></canvas>
+
+  <header>
+    <div class="topbar">
+      <div class="brand" role="banner" aria-label="Titre du site">
+        <div class="logo" aria-hidden="true"></div>
+        <div>
+          <h1 id="siteTitle">Awesome Sysadmin</h1>
+          <div class="sub">Cyber DevOps Playground</div>
+        </div>
+      </div>
+
+      <div class="search" role="search">
+        <span class="icon" aria-hidden="true">🔎</span>
+        <input id="q" type="search" placeholder="Rechercher un outil, une licence, un langage…" autocomplete="off" />
+        <span class="kbd" title="Ouvrir la palette de commande">Ctrl/⌘ K</span>
+      </div>
+
+      <div class="actions" aria-label="Actions">
+        <button id="btnMenu" class="btn" title="Menu" aria-label="Ouvrir le menu">
+          <span class="icon" aria-hidden="true">☰</span>
+        </button>
+        <button id="btnTheme" class="btn" title="Thème" aria-label="Changer de thème">
+          <span class="icon" aria-hidden="true">🌓</span>
+        </button>
+        <button id="btnFocus" class="btn" title="Mode focus" aria-label="Activer le mode focus">
+          <span class="icon" aria-hidden="true">🎯</span>
+        </button>
+        <button id="btnCompact" class="btn" title="Mode compact" aria-label="Activer le mode compact">
+          <span class="icon" aria-hidden="true">🗂️</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Drawer mobile -->
+  <div class="drawer-backdrop" id="drawerBackdrop" aria-hidden="true"></div>
+  <aside class="drawer" id="drawer" aria-label="Navigation mobile">
+    <div class="card" style="margin:12px;">
+      <div class="inner" style="padding:12px; display:flex; align-items:center; justify-content:space-between; gap:10px;">
+        <div style="font-weight:800;">Navigation</div>
+        <button id="btnCloseDrawer" class="btn" aria-label="Fermer"><span aria-hidden="true">✕</span></button>
+      </div>
+      <div class="sep"></div>
+      <div class="controls" id="drawerControls"></div>
+      <ul class="toc" id="drawerToc"></ul>
+    </div>
+  </aside>
+
+  <!-- Palette de commande -->
+  <div class="palette-backdrop" id="paletteBackdrop" aria-hidden="true"></div>
+  <div class="palette" id="palette" role="dialog" aria-modal="true" aria-label="Palette de commande">
+    <div class="card box">
+      <div class="head">
+        <span class="icon" aria-hidden="true">⌘</span>
+        <input id="cmdQ" type="text" placeholder="Tape une commande… (ex: licence MIT, aller monitoring)" autocomplete="off" />
+        <span class="kbd">Échap</span>
+      </div>
+      <div class="list" id="cmdList"></div>
+    </div>
+  </div>
+
+  <div class="wrap">
+    <section class="hero" id="home">
+      <div class="hero-grid">
+        <div class="card">
+          <div class="inner">
+            <h2>Explore une galaxie d’outils SysAdmin <span class="cursor">$</span></h2>
+            <p class="tagline">
+              Recherche instantanée, filtres avancés, mode focus et micro-interactions : transforme une awesome list en terrain de jeu cyber.
+              <strong>Interface en français</strong> ; <strong>noms/URLs</strong> inchangés.
+            </p>
+            <div class="cta-row">
+              <a class="btn btn-primary" href="#explorer" id="btnExplore">🚀 Explorer la liste</a>
+              <button class="btn" id="btnSearch">🔎 Rechercher un outil</button>
+              <button class="btn" id="btnSurprise">🎲 Surprends-moi</button>
+            </div>
+            <div class="hint" id="loadHint">Chargement des données…</div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="inner">
+            <div class="stats" aria-label="Statistiques">
+              <div class="stat"><div class="n" id="statCats">—</div><div class="l">catégories</div></div>
+              <div class="stat"><div class="n" id="statItems">—</div><div class="l">outils</div></div>
+              <div class="stat"><div class="n" id="statTags">—</div><div class="l">tags détectés</div></div>
+            </div>
+            <div class="portals" id="portals" aria-label="Portails catégories"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="main" id="explorer" aria-label="Explorateur">
+      <aside class="card sidebar" aria-label="Sidebar">
+        <div class="side-title">
+          <h3>TABLE DES MATIÈRES</h3>
+          <span class="badge-mini" id="resultCount">—</span>
+        </div>
+        <div class="controls" id="controls"></div>
+        <ul class="toc" id="toc"></ul>
+      </aside>
+
+      <div class="content" id="content"></div>
+    </section>
+
+    <section class="card" id="about" style="margin-top:16px;">
+      <div class="inner">
+        <h3 style="margin:0 0 6px;">À propos / Contribuer</h3>
+        <p class="tagline" style="margin:0;">
+          Interface de lecture d’une awesome list. Les liens et noms d’outils sont conservés. Les descriptions sont affichées en français si disponibles.
+        </p>
+        <div class="sep"></div>
+        <div id="aboutLinks" class="chips"></div>
+      </div>
+    </section>
+
+    <footer>
+      <div>✨ Astuce : <span class="kbd">Ctrl/⌘ K</span> ouvre la palette de commande. <span class="kbd">Échap</span> ferme les overlays.</div>
+      <div style="margin-top:6px;">Mode réduit-motion respecté automatiquement. Thème mémorisé localement.</div>
+    </footer>
+  </div>
+
+  <div class="fab" aria-label="Actions flottantes">
+    <button id="btnTop" class="btn" aria-label="Retour en haut" title="Retour en haut">↑</button>
+  </div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script src="./app.js" defer></script>
+</body>
+</html>
